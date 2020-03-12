@@ -27,12 +27,11 @@ namespace Pic
         bool isHex = true;     //十六进制显示标志位
         int receive_count = 0;
         int y = 0;
-        int temp = 0;
         private StringBuilder sb = new StringBuilder();    //为了避免在接收处理函数中反复调用，依然声明为一个全局变量
 
         byte colorL, colorH;
         Color newColor = new Color();
-        Bitmap OvImage = new Bitmap(240, 320,PixelFormat.Format16bppRgb555);   //bmp文件头（有）、位图信息头（240*320）、颜色信息（待传输）、图形数据（待传输从下向上扫描）
+        Bitmap OvImage = new Bitmap(240, 320);   //bmp文件头（有）、位图信息头（240*320）、颜色信息（待传输）、图形数据（待传输从下向上扫描）
         
         public Form1()
         {
@@ -96,8 +95,7 @@ namespace Pic
         private void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             this.Invoke(new EventHandler(delegate
-            {
-                
+            {            
                 //---------------------------//
                 int num = sp.BytesToRead;      //获取接收缓冲区中的字节数
                 byte[] received_buf = new byte[num];    //声明一个大小为num的字节数据用于存放读出的byte型数据
@@ -123,7 +121,7 @@ namespace Pic
                             b = colorL & 0x1f;
                             //Console.WriteLine("Red: "+r.ToString()+ " Green: " + g.ToString()+ " Blue: " + b.ToString());
                             //合成并显示像素
-                            newColor = Color.FromArgb(r, g, b);
+                            newColor = Color.FromArgb(r*5, g*5, b*5);
                             Int32 Row = (receive_count) / 320 / 2;    //计算列: 共240列,每列320个像素点
                             OvImage.SetPixel(Row, y++, newColor);
                             //换列显示
